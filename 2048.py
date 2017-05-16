@@ -19,20 +19,25 @@ def display(v,score):
 
     print ('total score: ',score)
 
+# 初始化二维矩阵，每一行各个元素以1/2,1/3,1/6的概率随机填入0,2,4
+# v[0]:[2, 2, 2, 4]
+# v[1]:[2, 2, 0, 0]
+# v[2]:[2, 2, 0, 2]
+# v[3]:[2, 0, 0, 2]
+
 def init(v):
     for i in range(4):
-#        v[i] = [random.choice([0,0,0,2,2,4])for x in v[i]]
         v[i] = [random.choice([0,0,0,2,2,4])for x in range(4)]
-        print ("v[i]:",v[i])
-'''
-        对齐非零的数字  
-        direction == 'left'：向左对齐，例如[8,0,0,2]左对齐后[8,2,0,0]  
-        direction == 'right'：向右对齐，例如[8,0,0,2]右对齐后[0,0,8,2]  
-'''
+        print ("v[%s]:%s"%(i,v[i]))
+
+# 对齐非零的数字  
+# direction == 'left'：向左对齐，例如[8,0,0,2]左对齐后[8,2,0,0]  
+# direction == 'right'：向右对齐，例如[8,0,0,2]右对齐后[0,0,8,2]  
+# remove() 函数用于移除列表中某个值的第一个匹配项。
+
 def align(vList,direction):
     for i in range(vList.count(0)):
         vList.remove(0)
-
         zeros = [0 for x in range(4 - len(vList))]
 
         if direction == 'left':
@@ -40,11 +45,11 @@ def align(vList,direction):
         else:
             vList[:0] = zeros
 
-'''
-        在列表查找相同且相邻的数字相加, 找到符合条件的返回True，否则返回False,同时还返回增加的分数  
-        direction == 'left':从右向左查找，找到相同且相邻的两个数字，左侧数字翻倍，右侧数字置0  
-        direction == 'right':从左向右查找，找到相同且相邻的两个数字，右侧数字翻倍，左侧数字置0 
-'''
+
+# 在列表查找相同且相邻的数字相加, 找到符合条件的返回True，否则返回False,同时还返回增加的分数  
+# direction == 'left':从右向左查找，找到相同且相邻的两个数字，左侧数字翻倍，右侧数字置0  
+# direction == 'right':从左向右查找，找到相同且相邻的两个数字，右侧数字翻倍，左侧数字置0 
+
 def addsame(vList,direction):
     score = 0
     if direction == 'left':
@@ -63,11 +68,11 @@ def addsame(vList,direction):
                 return {'bool':True ,'score':score}
     return {'bool':False,'score':score}
 
-'''
-        处理一行（列）中的数据，得到最终的该行（列）的数字状态值, 返回得分  
-        vList: 列表结构，存储了一行（列）中的数据  
-        direction: 移动方向,向上和向左都使用方向'left'，向右和向下都使用'right'  
-'''  
+
+# 处理一行（列）中的数据--排整齐，得到最终的该行（列）的数字状态值, 返回得分  
+# vList: 列表结构，存储了一行（列）中的数据  
+# direction: 移动方向,向上和向左都使用方向'left'，向右和向下都使用'right'  
+  
 def handle(vList,direction):
     totalScore = 0
     align(vList,direction)
@@ -78,18 +83,27 @@ def handle(vList,direction):
         result = addsame(vList,direction)
     return totalScore
 
-'''
-    根据移动方向重新计算矩阵状态值，并记录得分
-'''
+
+# 根据移动方向重新计算矩阵状态值，并记录得分
+
 def operation(v):
     totalScore = 0
+    # 初始化游戏标志位和方向信息，为False时表示游戏结束
     gameOver = False
     direction = 'left'
+
     op = input('operater:')
+    # 0    4    4    0      8    0    0    0  
+    # 0    0    0    0 >>   0    0    0    0
+    # 2    2    2    2      8    0    2    0
+    # 0    2    2    0      4    0    0    0
+
     if op in ['A','a']:
         direction = 'left'
         for row in range(4):
+            # print ("v[%s]=%s"%(row,v[row]))
             totalScore += handle(v[row],direction)
+
     elif op in ['D','d']:
         direction = 'right'
         for row in range(4):
@@ -118,7 +132,7 @@ def operation(v):
     else:
         print ("Invalid input, please enter a charactor in [W, S, A, D] or the lower")
         return {'gameOver':gameOver,'score':totalScore}
-    #统计空白区域数目N
+    # 统计空白区域数目N
     N = 0
     for q in v:
         N += q.count(0)
@@ -144,6 +158,7 @@ if __name__ == "__main__":
     score = 0
     print ('Input：W(Up) S(Down) A(Left) D(Right) Q(Quit), press <CR>.')
     while True:
+        # 呈现矩阵结果，及分数
         display(v,score)
         result = operation(v)
         if result['gameOver'] == True:
@@ -153,11 +168,4 @@ if __name__ == "__main__":
             score += result['score']
             if score >= 2048:
                 print ('Game Over,You Win!!!')
-                print ('Your total score:',score)
-
-
-
-
-            
-
-
+                print ('Your total score:%s'%(score))
