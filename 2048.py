@@ -34,16 +34,48 @@ def init(v):
 # direction == 'left'：向左对齐，例如[8,0,0,2]左对齐后[8,2,0,0]  
 # direction == 'right'：向右对齐，例如[8,0,0,2]右对齐后[0,0,8,2]  
 # remove() 函数用于移除列表中某个值的第一个匹配项。
+# Input：W(Up) S(Down) A(Left) D(Right) Q(Quit), press <CR>.
+#    0    0    0    4
+#    0    0    0    2
+#    2    2    0    2
+#    2    0    2    0
+# ************LEFT****************************
+# ------------row1------------------
+# zeros:[0]
+# zeros:[0]
+# zeros:[0]
+# alignList:[4, 0, 0, 0]
+# ------------row2------------------
+# zeros:[0]
+# zeros:[0]
+# zeros:[0]
+# alignList:[2, 0, 0, 0]
+# -----------row3-------------------
+# zeros:[0]
+# alignList:[2, 2, 2, 0]
+# zeros:[0]
+# zeros:[0]
+# alignList:[4, 2, 0, 0]
+# -----------row4-------------------
+# zeros:[0]
+# zeros:[0]
+# alignList:[2, 2, 0, 0]
+# zeros:[0]
+# zeros:[0]
+# zeros:[0]
+# alignList:[4, 0, 0, 0]
 
 def align(vList,direction):
     for i in range(vList.count(0)):
         vList.remove(0)
         zeros = [0 for x in range(4 - len(vList))]
+        print ("zeros:%s"%(zeros))
 
         if direction == 'left':
             vList.extend(zeros)
         else:
-            vList[:0] = zeros
+            vList.insert(0,zeros)
+    print ("alignList:%s"%(vList))
 
 
 # 在列表查找相同且相邻的数字相加, 找到符合条件的返回True，否则返回False,同时还返回增加的分数  
@@ -74,6 +106,7 @@ def addsame(vList,direction):
 # direction: 移动方向,向上和向左都使用方向'left'，向右和向下都使用'right'  
   
 def handle(vList,direction):
+    print ("-"*30)
     totalScore = 0
     align(vList,direction)
     result = addsame(vList,direction)
@@ -85,6 +118,11 @@ def handle(vList,direction):
 
 
 # 根据移动方向重新计算矩阵状态值，并记录得分
+# ------------------A/a-------------------
+# 0    4    4    0      8    0    0    0  
+# 0    0    0    0  >>  0    0    0    0
+# 2    2    2    2      8    0    2    0
+# 0    2    2    0      4    0    0    0
 
 def operation(v):
     totalScore = 0
@@ -93,11 +131,7 @@ def operation(v):
     direction = 'left'
 
     op = input('operater:')
-    # 0    4    4    0      8    0    0    0  
-    # 0    0    0    0 >>   0    0    0    0
-    # 2    2    2    2      8    0    2    0
-    # 0    2    2    0      4    0    0    0
-
+    
     if op in ['A','a']:
         direction = 'left'
         for row in range(4):
